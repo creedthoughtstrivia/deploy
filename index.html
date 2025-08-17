@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Creed Thoughts Trivia</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div class="overlay">
+  <!-- Main navigation -->
+  <nav class="navbar">
+    <h1>Creed Thoughts Trivia</h1>
+    <ul>
+      <li><a href="solo.html">Solo Play</a></li>
+      <li><a href="live.html">Live Match</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+      <!-- Additional informational pages -->
+      <li><a href="about-creed.html">About Creed Thoughts</a></li>
+      <li><a href="about-addicts.html">About Office Addicts</a></li>
+      <li><a href="about-show.html">About The Show</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+      <li><a href="store.html">Store</a></li>
+      <!-- Admin link is still provided at the end -->
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+  </nav>
+  <!-- Welcome card -->
+  <section class="card">
+    <h2>Welcome to Creed Thoughts Trivia Night!</h2>
+    <p>Choose your mode of play. Enjoy the bar vibes with a game of trivia, solo or with friends. Explore rooms, host tournaments and discover fun Easter eggs inspired by the hit TV show.</p>
+  </section>
+</div>
+<!-- Scripts for interactive features -->
+<script src="js/sound.js"></script>
+<!-- Hide/show Admin nav and provide logout based on session flag -->
+<script src="js/admin-gate.js"></script>
+<script>
+  // Secret phrase detection to toggle an alternate theme.  When the user
+  // types the phrase "BEARS.BEETS.BATTLESTAR." anywhere on this page, the
+  // body will toggle a dark‑mode inversion effect.  The preference is
+  // persisted in localStorage.
+  (function() {
+    const SECRET = 'BEARS.BEETS.BATTLESTAR.';
+    let buffer = '';
+    function applyTheme() {
+      const enabled = localStorage.getItem('ct_dark_mode') === 'true';
+      document.body.classList.toggle('dark-mode', enabled);
+    }
+    document.addEventListener('keydown', (e) => {
+      buffer += e.key.toUpperCase();
+      if (buffer.length > SECRET.length) buffer = buffer.slice(-SECRET.length);
+      if (buffer === SECRET) {
+        const current = localStorage.getItem('ct_dark_mode') === 'true';
+        localStorage.setItem('ct_dark_mode', (!current).toString());
+        applyTheme();
+        buffer = '';
+        alert('Theme toggled!');
+      }
+    });
+    // Apply stored theme on load
+    document.addEventListener('DOMContentLoaded', applyTheme);
+  })();
+  // Display Explore link if the bonus has been unlocked via gameplay
+  document.addEventListener('DOMContentLoaded', () => {
+    const navList = document.querySelector('.navbar ul');
+    if (navList && localStorage.getItem('ct_unlocked_explore') === 'true') {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = 'explore.html';
+      a.textContent = 'Explore';
+      li.appendChild(a);
+      navList.appendChild(li);
+    }
+  });
+  // Add click sound to nav links
+  document.querySelectorAll('button, a').forEach(el => {
+    el.addEventListener('click', () => window.playSound && window.playSound('click'));
+  });
+</script>
+</body>
+</html>
